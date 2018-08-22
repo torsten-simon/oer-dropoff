@@ -15,22 +15,11 @@
 </div>
 
 <!-- Basic Upload Section -->
-
-<div ng2FileDrop *ngIf="step<=3" class="custom-component-drop-zone"
-     [ng2FileDropAcceptMultiple]="false"
-     (ng2FileDropFileAccepted)="dragFileAccepted($event)"
-     (ng2FileDropFileRejected)="dragFileRejected($event)"
-     style="
-    background-image: url('assets/counter.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  "
->
-
+<div *ngIf="step<=3" class="custom-component-drop-zone" (drop)="dragFileAccepted($event)" (dragover)="dragFileOver($event)">
   <div *ngIf="step==1"  (click)="manualFileSelect.click()">
 
     <input id="manualFileSelect" type="file" (change)="manualChooseFile($event)" style="visibility:hidden" #manualFileSelect /><br>
-    <button md-raised-button  color="primary" style="margin-top: 152px;opacity: 0.95;">Choose File</button>
+    <button mat-raised-button  color="primary" style="margin-top: 152px;opacity: 0.95;">Choose File</button>
     <div style="
     font-style: italic;
     margin-top: 15px;
@@ -54,15 +43,15 @@
     ">
       {{uploadFileName}}
     </div>
-    <md-progress-bar
+    <mat-progress-bar
       class="example-margin"
-      style="width: 250px; 
+      style="width: 250px;
       margin-left:auto; margin-right: auto;
       margin-top: -65px"
       [style.opacity]="(uploadProgress==-1) ? 0 : 1"
       [value]="uploadProgress"
       [mode]="uploadMode">
-    </md-progress-bar>
+    </mat-progress-bar>
   </div>
 
 <!-- Thanks -->
@@ -80,27 +69,26 @@
     </div>
   </div>
 </div>
-
 <div *ngIf="step==2" style="margin: 16px; width: 355px; margin-left:auto; margin-right: auto; text-align: left;">
   <div style="margin-bottom: 8px;">
-    <md-checkbox 
-    class="example-margin" 
+    <mat-checkbox
+    class="example-margin"
     style="transition: opacity 500ms linear;    margin-left: 22px;"
     [style.opacity]="opacityCheck1"
-    [(ngModel)]="legalCheckboxOne"> 
+    [(ngModel)]="legalCheckboxOne">
       <div class="legalMain">No Copyright Infrigement</div>
       <div class="legalSub">To the best of my knowledge all used material of<br>this content is Public Domain or created by me.</div>
-    </md-checkbox>
+    </mat-checkbox>
   </div>
   <div>
-    <md-checkbox 
-    class="example-margin" 
+    <mat-checkbox
+    class="example-margin"
     style="transition: opacity 500ms linear;    margin-left: 22px;"
     [style.opacity]="opacityCheck2"
-    [(ngModel)]="legalCheckboxTwo"> 
+    [(ngModel)]="legalCheckboxTwo">
     <div class="legalMain">Free to Use</div>
     <div class="legalSub">I commission anybody to publish this creation<br>under any open and free license.</div>
-    </md-checkbox>
+    </mat-checkbox>
   </div>
 
   <button md-raised-button [disabled]="(uploadProgress>=0)" (click)="buttonDropIt()" color="primary" style="margin-top: 16px; width: 100%">Drop it</button>

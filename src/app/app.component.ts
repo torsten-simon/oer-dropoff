@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Ng2FileDropAcceptedFile, Ng2FileDropRejectedFile } from 'ng2-file-drop';
 import { HttpModule, Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
 import { MatDrawerToggleResult } from '@angular/material';
 import { prepareProfile } from 'selenium-webdriver/firefox';
+import {Observable} from 'rxjs/index';
+import {FileSystemFileEntry, UploadEvent} from 'ngx-file-drop';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +26,7 @@ export class AppComponent {
   uploadFile:File;
 
   // edu-sharing API config
-  eduApiUrl:string = 'http://edu41.edu-sharing.de/edu-sharing/rest/';
+  eduApiUrl:string = 'https://playground.oer-contentbuffet.info/edu-sharing/rest/';
   eduApiUser:string = 'oer-dropoff';
   eduApiPass:string = 'oer-dropoff';
 
@@ -58,21 +58,26 @@ export class AppComponent {
 
     this.legalCheckboxOne = false;
     this.legalCheckboxTwo = false;
-  
+
     this.opacityCheck1 = 0;
     this.opacityCheck2 = 0;
   }
 
   // File being dragged has been dropped and is valid
-  private dragFileAccepted(acceptedFile: Ng2FileDropAcceptedFile):void {
-
+  dragFileAccepted(event):void {
+    event.preventDefault();
     // block file drops during upload or on multiple files
     if (this.step > 1) { return; }
 
     // set file data
-    this.uploadFile = acceptedFile.file;
+    console.log(event);
+    this.uploadFile=event;
     this.getReadyStep2();
-  
+
+
+  }
+  dragFileOver(event){
+    event.preventDefault();
   }
 
   manualChooseFile($event):void {
@@ -87,7 +92,7 @@ export class AppComponent {
     this.opacityCheck2 = 1;
     this.step = 2;
 
-  } 
+  }
 
   blinkCheck1():void {
       this.opacityCheck1 = 0;
@@ -104,11 +109,6 @@ export class AppComponent {
   };
 
 
-  // File being dragged has been dropped and has been rejected
-  private dragFileRejected(rejectedFile: Ng2FileDropRejectedFile) {
-    console.log('TODO: dragFileRejected', rejectedFile);
-  }
-
   private uploadFileProcess(file:File) : void {
 
     // let progressbar show movement
@@ -116,7 +116,7 @@ export class AppComponent {
     this.uploadMode = "indeterminate";
 
     this.httpAuthorize((oAuthToken)=>{
-      
+
       // WIN
       console.log("OK Auth - Got Token:"+oAuthToken);
       this.httpCreateInboxNode(oAuthToken, file.name, (nodeId) => {
@@ -128,7 +128,7 @@ export class AppComponent {
           // WIN
           console.log("OK File was uploaded");
           this.step = 3;
-     
+
         }, (error) => {
           alert("FAIL Content Upload");
         });
@@ -143,12 +143,12 @@ export class AppComponent {
     }, (error) => {
       // FAIL
       alert("FAIL oAuth on Repo");
-    }); 
+    });
 
   }
 
   // gets a oAuth token from server --> callback(token:string)
-  private httpAuthorize(callbackWin:Function, callbackFail:Function) {  
+  private httpAuthorize(callbackWin:Function, callbackFail:Function) {
     const headers: Headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers.append('Accept', '*/*');
@@ -195,8 +195,8 @@ export class AppComponent {
 
   public sendDataViaXHR(file: File, token:string, nodeId:string, method='POST', fieldName='file' ): Observable<XMLHttpRequest> {
     return Observable.create( (observer) => {
-      
-      let versionComment = {
+
+      const versionComment = {
         dropoff: true,
         claimCopyRightFree: true,
         commissionToPublish: true
@@ -211,7 +211,7 @@ export class AppComponent {
       + encodeURI(file.type);
 
       try {
-        var xhr: XMLHttpRequest = new XMLHttpRequest();
+        const xhr: XMLHttpRequest = new XMLHttpRequest();
 
         // display progress
         xhr.onprogress = (progress) => {
@@ -236,15 +236,15 @@ export class AppComponent {
         const headers: Headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Authorization', 'Bearer' + token);
-        let options = {headers:headers,withCredentials:true};
+        const options = {headers:headers,withCredentials:true};
         xhr.withCredentials=options.withCredentials;
         xhr.open(method, query, true);
-        for (let key of options.headers.keys()) {
+        for (const key of options.headers.keys()) {
           xhr.setRequestHeader(key, options.headers.get(key));
         }
 
         // set data
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append(fieldName, file, file.name);
 
         // sending

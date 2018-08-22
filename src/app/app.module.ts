@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 // UI components: https://material.angular.io/components
-import {MdButtonModule, MdCheckboxModule, MdProgressBarModule} from '@angular/material';
+import {MatButtonModule, MatCheckboxModule, MatProgressBar, MatProgressBarModule, MatProgressSpinnerModule} from '@angular/material';
 
 // File Drag+Drop: https://github.com/leewinder/ng2-file-drop
-import { Ng2FileDropModule } from 'ng2-file-drop';
 
 // Local Modules
 import { AppComponent } from './app.component';
+import {FileDropModule} from 'ngx-file-drop';
 
 @NgModule({
   declarations: [
@@ -18,16 +18,14 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    MdButtonModule,
+    MatButtonModule,
     FormsModule,
     HttpModule,
-    MdCheckboxModule,
-    MdProgressBarModule,
-    Ng2FileDropModule
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    FileDropModule
   ],
-  exports: [
-    MdButtonModule,
-    MdCheckboxModule],
   providers: [],
   bootstrap: [AppComponent]
 })
